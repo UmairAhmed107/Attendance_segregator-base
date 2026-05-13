@@ -6,7 +6,14 @@ header("Cache-Control: no-cache, no-store, must-revalidate");
 header("Pragma: no-cache");
 header("Expires: 0");
 
-/* ===== LOGOUT ===== */
+require_once __DIR__ . '/vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+$valid_user = $_ENV['APP_USER'] ?? '';
+$valid_pass = $_ENV['APP_PASS'] ?? '';
+
 if (isset($_GET['logout'])) {
     $_SESSION = [];
     if (ini_get("session.use_cookies")) {
@@ -15,17 +22,12 @@ if (isset($_GET['logout'])) {
             $p["path"], $p["domain"], $p["secure"], $p["httponly"]);
     }
     session_destroy();
-    // Restart a clean empty session so nothing lingers
     session_start();
     session_regenerate_id(true);
-    // Fall through to show login form — do NOT redirect
 }
 
-$valid_user = "Attendance";
-$valid_pass = "SPM@123";
 $error = '';
 
-/* ===== LOGIN ===== */
 if (isset($_POST['login'])) {
     if ($_POST['username'] === $valid_user && $_POST['password'] === $valid_pass) {
         session_regenerate_id(true);
@@ -40,21 +42,24 @@ if (isset($_POST['login'])) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>VIT Attendance Segregator - Login</title>
+    <title>SMART_ATT-Login</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        body { font-family: Arial, sans-serif; background: #f5f5f5; margin:0; padding:0; }
-        .main-header { text-align:center; padding:20px 10px; background:white; }
-        .logo-row { display:flex; justify-content:center; gap:20px; margin-bottom:10px; }
-        .logo { width:80px; height:auto; }
-        .header-text h2 { margin:0; font-size:18px; color:black; }
-        .header-text h1 { margin:5px 0 0; font-size:24px; color:#111; }
-        .login-box { width:400px; margin:30px auto; padding:30px; background:#fff; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.2); box-sizing:border-box; }
-        .login-box h2 { text-align:center; margin-bottom:20px; }
-        .login-box input { width:100%; padding:10px; margin:10px 0; box-sizing:border-box; border:1px solid #ccc; border-radius:5px; }
-        .submit-btn { width:100%; padding:10px; background:rgb(27,0,93); color:white; border:none; cursor:pointer; border-radius:5px; font-weight:bold; font-size:15px; }
-        .submit-btn:hover { background:rgb(45,0,140); }
-        .error { color:red; text-align:center; margin-bottom:10px; }
+        html,body{margin:0;padding:0;overflow-x:hidden;font-family:Arial,sans-serif;background:#f5f5f5;}
+.main-header{text-align:center;padding:20px 10px;background:white;}
+.logo-row{display:flex;justify-content:center;align-items:center;gap:20px;margin-bottom:10px;flex-wrap:wrap;}
+.logo-vit{height:100px;max-width:100%;}
+.logo-iic{height:80px;max-width:100%;}
+.header-text h2{margin:0;font-size:18px;color:black;}
+.header-text h1{margin:5px 0 0;font-size:24px;color:#111;}
+.login-box{width:90%;max-width:400px;margin:30px auto;padding:30px;background:#fff;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.2);box-sizing:border-box;}
+.login-box h2{text-align:center;margin-bottom:20px;}
+.login-box input{width:100%;padding:10px;margin:10px 0;box-sizing:border-box;border:1px solid #ccc;border-radius:5px;}
+.submit-btn{width:100%;padding:10px;background:rgb(27,0,93);color:white;border:none;cursor:pointer;border-radius:5px;font-weight:bold;font-size:15px;}
+.submit-btn:hover{background:rgb(45,0,140);}
+.error{color:red;text-align:center;margin-bottom:10px;}
+.page-footer{text-align:center;padding:15px;background:rgb(27,0,93);color:white;width:100%;box-sizing:border-box;margin-top:30px;}
+img{max-width:100%;height:auto;}
     </style>
 
     <!-- Disable right-click and devtools -->
@@ -71,8 +76,8 @@ if (isset($_POST['login'])) {
 
 <div class="main-header">
     <div class="logo-row">
-        <img src="vit-logo.png" class="logo">
-        <img src="iic-logo.png" class="logo">
+        <img src="vit-logo.png" class="logo-vit">
+        <img src="iic-logo.png" class="logo-iic">
     </div>
     <div class="header-text">
         <h2>Office of Innovation, Startup and Technology Transfer (VIT-IST)</h2>
@@ -89,6 +94,11 @@ if (isset($_POST['login'])) {
         <button type="submit" name="login" class="submit-btn">Sign In</button>
     </form>
 </div>
-
+<footer class="page-footer">
+    <p>
+        Developed by: <strong>Nithesh Kumar T</strong>, <strong>Umair Ahmed R, Srishti Singh</strong> <br>
+        Mentor: <strong>Dr Jothish Kumar M</strong>
+    </p>
+</footer>
 </body>
 </html>
